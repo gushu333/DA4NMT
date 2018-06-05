@@ -83,7 +83,8 @@ def main():
     wlog('\nPreparing validation set from {} ... '.format(valid_file))
     valid_src_tlst, valid_src_lens = val_wrap_data(valid_file, src_vocab)
 
-    wlog('Out of domain Sentence-pairs count in training data: {}'.format(len(train_src_tlst)))
+    if wargs.fine_tune is False:
+        wlog('Out of domain Sentence-pairs count in training data: {}'.format(len(train_src_tlst)))
     wlog('In domain Sentence-pairs count in training data: {}'.format(len(train_src_tlst_domain)))
     
     src_vocab_size, trg_vocab_size = vocab_data['src'].size(), vocab_data['trg'].size()

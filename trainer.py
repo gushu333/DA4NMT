@@ -80,7 +80,8 @@ class Trainer(object):
             wlog('$' * 30)
 
             if wargs.epoch_shuffle and epoch > wargs.epoch_shuffle_minibatch:
-                self.train_data.shuffle()
+                if wargs.fine_tune is False:
+                    self.train_data.shuffle()
                 self.train_data_domain.shuffle()
             # shuffle the original batch
             shuffled_batch_idx = tc.randperm(batch_count+batch_count_domain)
