@@ -116,18 +116,23 @@ class Nbs(object):
 
             logit = logit_common + logit_private
 
-            if logit.dim() == 2:    # for decoding
-                logit = logit.view(int(logit.size(0)), int(logit.size(1)/2), int(2))
-            elif logit.dim() == 3:
-                logit = logit.view(logit.size(0), logit.size(1), logit.size(2)/2, 2)
+            if logit_private.dim() == 2:    # for decoding
+                logit_private = logit_private.view(int(logit.size(0)), int(logit.size(1)/2), int(2))
+                logit_common = logit_common.view(int(logit.size(0)), int(logit.size(1)/2), int(2))
+            elif logit_private.dim() == 3:
+                logit_private = logit_private.view(logit.size(0), logit.size(1), logit.size(2)/2, 2)
+                logit_common = logit_common.view(logit.size(0), logit.size(1), logit.size(2)/2, 2)
 
-            logit = logit.max(-1)[0] #if self.max_out else self.tanh(logit)
+            logit_common = logit_common.max(-1)[0] #if self.max_out else self.tanh(logit)
+            logit_private = logit_private.max(-1)[0]
+
+            logit = tc.cat((logit_com, logit_pri), -1)
             
             self.C[3] += 1
 
             debug('For beam[{}], pre-beam ids: {}'.format(i - 1, prevb_id))
             # (preb_sz, vocab_size)
-            next_ces = self.model.classifier(logit)
+            next_ces = self.model.classifier_out(logit) if self.domain is "OUT" else self.model.classifier_in(logit)
             next_ces = next_ces.cpu().data.numpy()
             cand_scores = hyp_scores[:, None] + next_ces
             cand_scores_flat = cand_scores.flatten()

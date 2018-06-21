@@ -33,7 +33,9 @@ class NMT(nn.Module):
         #DANN
         self.domain_discriminator = Domain_Discriminator()
 
-        self.classifier = Classifier(wargs.out_size, trg_vocab_size, self.trg_lookup_table if wargs.copy_trg_emb is True else None)
+        #two calssifiers, one for out domain, another for in domain
+        self.classifier_in = Classifier(2*wargs.out_size, trg_vocab_size, self.trg_lookup_table if wargs.copy_trg_emb is True else None)
+        self.classifier_out = Classifier(2*wargs.out_size, trg_vocab_size, self.trg_lookup_table if wargs.copy_trg_emb is True else None)
 
     def init_state(self, xs_h, xs_mask=None):
 
@@ -76,7 +78,6 @@ class NMT(nn.Module):
             logit_pri  = self.decoder_in(s0_private, srcs_private, trgs, uh_common, srcs_m, trgs_m, isAtt=isAtt)
         else:
             logit_pri = self.decoder_out(s0_private, srcs_private, trgs, uh_common, srcs_m, trgs_m, isAtt=isAtt)
-        logit = logit_pri + logit_com
 
         def decoder_step_out(logit, max_out=True):
             if logit.dim() == 2:
@@ -86,8 +87,14 @@ class NMT(nn.Module):
             logit = logit.max(-1)[0] if max_out else self.tanh(logit)
             logit = logit * trgs_m[:, :, None]
             return logit
-            
-        decoder_output = decoder_step_out(logit)
+        
+        logit_pri = decoder_step_out(logit_pri)
+        logit_com = decoder_step_out(logit_com)
+
+        #concatenate the hidden state of the two decoders 
+        logit = tc.cat((logit_com, logit_pri), -1)
+    
+        decoder_output = logit
         domain_output = self.domain_discriminator(s0_common, alpha)
 
         return decoder_output, domain_output

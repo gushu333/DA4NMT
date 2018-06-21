@@ -115,7 +115,7 @@ class Trainer(object):
                     #batch_loss, grad_output, batch_correct_num = memory_efficient(
                     #    outputs, trgs[1:], trgs_m[1:], self.model.classifier)
                     #backward compute, now we have the grad
-                    batch_loss, batch_correct_num, batch_log_norm = self.model.classifier.snip_back_prop(
+                    batch_loss, batch_correct_num, batch_log_norm = self.model.classifier_out.snip_back_prop(
                         decoder_outputs, trgs[1:], trgs_m[1:], wargs.snip_size)
 
                     #self.model.zero_grad()
@@ -141,7 +141,7 @@ class Trainer(object):
                     decoder_outputs, domain_outputs = self.model(srcs_domain, trgs_domain[:-1], srcs_m_domain, trgs_m_domain[:-1], 'IN', alpha=wargs.alpha)
                     if len(decoder_outputs) == 2: (decoder_outputs, _checks) = decoder_outputs
                     this_bnum = decoder_outputs.size(1)
-                    batch_loss, batch_correct_num, batch_log_norm = self.model.classifier.snip_back_prop(
+                    batch_loss, batch_correct_num, batch_log_norm = self.model.classifier_in.snip_back_prop(
                        decoder_outputs, trgs_domain[1:], trgs_m_domain[1:], wargs.snip_size)
                     #domain_outputs = self.model(srcs_domain, None, srcs_m_domain, None, 'IN', alpha=alpha)
                     domain_label = tc.ones(len(domain_outputs))
