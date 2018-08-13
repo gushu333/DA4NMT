@@ -10,28 +10,32 @@ max_seq_len = 100
 Embedding layer
 '''
 # Size of word embedding of source word and target word
-src_wemb_size = 256
-trg_wemb_size = 256
-
+src_wemb_size = 512
+trg_wemb_size = 512
+src_wemb_size_pri = 128
+trg_wemb_size_pri = 128
 '''
 Encoder layer
 '''
 # Size of hidden units in encoder
-enc_hid_size = 256
+enc_hid_size = 512
+enc_hid_size_pri = 128
 
 '''
 Attention layer
 '''
 # Size of alignment vector
-align_size = 256
+align_size = 512
+align_size_pri = 128
 
 '''
 Decoder layer
 '''
 # Size of hidden units in decoder
-dec_hid_size = 256
+dec_hid_size = 512
+dec_hid_size_pri = 128
 # Size of the output vector
-out_size = 256
+out_size = 512
 
 drop_rate = 0.5
 
@@ -65,7 +69,7 @@ tests_prefix = None
 
 # Training data
 train_shuffle = True
-batch_size = 40
+batch_size = 30
 sort_k_batches = 10
 
 # Data path
@@ -99,15 +103,15 @@ epoch_shuffle_minibatch = 1
 
 small = True
 
-display_freq = 10 if small else 1000
+display_freq = 100 if small else 1000
 sampling_freq = 100 if small else 5000
 sample_size = 3
 if_fixed_sampling = False
 
 epoch_eval = False
 final_test = False
-eval_valid_from = 0 if small else 50000
-eval_valid_freq = 3000 if small else 20000
+eval_valid_from = 210000 if small else 50000
+eval_valid_freq = 4000 if small else 20000
 
 save_one_model = False
 start_epoch = 1
@@ -178,8 +182,18 @@ gpu_id = [3]
 #args of discriminator DANN
 dis_hid_size = 100
 dis_type = 2
-alpha = 0.16
+alpha = 0.05
 
 fine_tune = False
 
 none_sense = True
+
+#choose the loss function of the adversarial training
+cross_entropy = True
+max_entropy = True
+
+
+
+
+
+

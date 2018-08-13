@@ -1,0 +1,579 @@
+CUDA is available, specify device by gpu_id argument (i.e. gpu_id=[3])
+Using GPU 3
+
+wmodel exists, no delete
+
+wvalid exists, no delete
+
+Preparing out of domain source vocabulary from data/train_outdomain.src ... 
+Load dictionary from file data/src.dict.tcf
+
+Preparing in domain source vocabulary from data/train_indomain.src ...
+14336 <= 50000 tokens, Bingo!~
+|Final vocabulary| / |Original vocabulary| = 1917054 / 1917054 = 100.00%
+Save updated dictionary into data/src.dict.tcf
+
+Preparing out of domain target vocabulary from data/train_outdomain.trg ... 
+Load dictionary from file data/trg.dict.tcf
+
+Preparing in domain target vocabulary from data/train_indomain.trg ... 
+15908 <= 50000 tokens, Bingo!~
+|Final vocabulary| / |Original vocabulary| = 1549319 / 1549319 = 100.00%
+Save updated dictionary into data/trg.dict.tcf
+
+Preparing out of domain training set from data/train_outdomain.src and data/train_outdomain.trg ... 
+.........125675..........251350..........377025..........502700..........628375..........754050..........879725..........1005400..........1131075..........
+Finish to read bi-corpus.
+Sentence-pairs count: 1256747(total) - 0(ignore) - 4495(longer) = 1252252
+Sorting for each 10 batches ... Done.
+
+Preparing in domain training set from data/train_indomain.src and data/train_indomain.trg...
+.........5975..........11950..........17925..........23900..........29875..........35850..........41825..........47800..........53775..........
+Finish to read bi-corpus.
+Sentence-pairs count: 59742(total) - 0(ignore) - 20(longer) = 59722
+Sorting for each 10 batches ... Done.
+
+Preparing validation set from ./data/devset.src ... 
+Finish to read ... Done. ./data/devset.src count: 1057
+Out of domain Sentence-pairs count in training data: 1252252
+In domain Sentence-pairs count in training data: 59722
+Vocabulary size: |source|=14336, |target|=15908
+Build bilingual Input, Batch size 30, Sort in batch? True
+Build monolingual Input, Batch size 1, Sort in batch? True
+Build bilingual Input, Batch size 30, Sort in batch? True
+Uniform -> grad True	encoder_common.src_lookup_table.weight
+Uniform -> grad True	encoder_common.forw_gru.xh.weight
+Uniform -> grad True	encoder_common.forw_gru.xh.bias
+Uniform -> grad True	encoder_common.forw_gru.hh.weight
+Uniform -> grad True	encoder_common.forw_gru.hh.bias
+Uniform -> grad True	encoder_common.forw_gru.xrz.weight
+Uniform -> grad True	encoder_common.forw_gru.xrz.bias
+Uniform -> grad True	encoder_common.forw_gru.hrz.weight
+Uniform -> grad True	encoder_common.forw_gru.hrz.bias
+Uniform -> grad True	encoder_common.back_gru.xh.weight
+Uniform -> grad True	encoder_common.back_gru.xh.bias
+Uniform -> grad True	encoder_common.back_gru.hh.weight
+Uniform -> grad True	encoder_common.back_gru.hh.bias
+Uniform -> grad True	encoder_common.back_gru.xrz.weight
+Uniform -> grad True	encoder_common.back_gru.xrz.bias
+Uniform -> grad True	encoder_common.back_gru.hrz.weight
+Uniform -> grad True	encoder_common.back_gru.hrz.bias
+Uniform -> grad True	encoder_in.src_lookup_table.weight
+Uniform -> grad True	encoder_in.forw_gru.xh.weight
+Uniform -> grad True	encoder_in.forw_gru.xh.bias
+Uniform -> grad True	encoder_in.forw_gru.hh.weight
+Uniform -> grad True	encoder_in.forw_gru.hh.bias
+Uniform -> grad True	encoder_in.forw_gru.xrz.weight
+Uniform -> grad True	encoder_in.forw_gru.xrz.bias
+Uniform -> grad True	encoder_in.forw_gru.hrz.weight
+Uniform -> grad True	encoder_in.forw_gru.hrz.bias
+Uniform -> grad True	encoder_in.back_gru.xh.weight
+Uniform -> grad True	encoder_in.back_gru.xh.bias
+Uniform -> grad True	encoder_in.back_gru.hh.weight
+Uniform -> grad True	encoder_in.back_gru.hh.bias
+Uniform -> grad True	encoder_in.back_gru.xrz.weight
+Uniform -> grad True	encoder_in.back_gru.xrz.bias
+Uniform -> grad True	encoder_in.back_gru.hrz.weight
+Uniform -> grad True	encoder_in.back_gru.hrz.bias
+Uniform -> grad True	encoder_out.src_lookup_table.weight
+Uniform -> grad True	encoder_out.forw_gru.xh.weight
+Uniform -> grad True	encoder_out.forw_gru.xh.bias
+Uniform -> grad True	encoder_out.forw_gru.hh.weight
+Uniform -> grad True	encoder_out.forw_gru.hh.bias
+Uniform -> grad True	encoder_out.forw_gru.xrz.weight
+Uniform -> grad True	encoder_out.forw_gru.xrz.bias
+Uniform -> grad True	encoder_out.forw_gru.hrz.weight
+Uniform -> grad True	encoder_out.forw_gru.hrz.bias
+Uniform -> grad True	encoder_out.back_gru.xh.weight
+Uniform -> grad True	encoder_out.back_gru.xh.bias
+Uniform -> grad True	encoder_out.back_gru.hh.weight
+Uniform -> grad True	encoder_out.back_gru.hh.bias
+Uniform -> grad True	encoder_out.back_gru.xrz.weight
+Uniform -> grad True	encoder_out.back_gru.xrz.bias
+Uniform -> grad True	encoder_out.back_gru.hrz.weight
+Uniform -> grad True	encoder_out.back_gru.hrz.bias
+Uniform -> grad True	s_init.weight
+Uniform -> grad True	s_init.bias
+Uniform -> grad True	s_init_out.weight
+Uniform -> grad True	s_init_out.bias
+Uniform -> grad True	s_init_in.weight
+Uniform -> grad True	s_init_in.bias
+Uniform -> grad True	ha.weight
+Uniform -> grad True	ha.bias
+Uniform -> grad True	ha_in.weight
+Uniform -> grad True	ha_in.bias
+Uniform -> grad True	ha_out.weight
+Uniform -> grad True	ha_out.bias
+Uniform -> grad True	decoder_common.attention.sa.weight
+Uniform -> grad True	decoder_common.attention.sa.bias
+Uniform -> grad True	decoder_common.attention.a1.weight
+Uniform -> grad True	decoder_common.attention.a1.bias
+Uniform -> grad True	decoder_common.trg_lookup_table.weight
+Uniform -> grad True	decoder_common.gru1.xh.weight
+Uniform -> grad True	decoder_common.gru1.xh.bias
+Uniform -> grad True	decoder_common.gru1.hh.weight
+Uniform -> grad True	decoder_common.gru1.hh.bias
+Uniform -> grad True	decoder_common.gru1.xrz.weight
+Uniform -> grad True	decoder_common.gru1.xrz.bias
+Uniform -> grad True	decoder_common.gru1.hrz.weight
+Uniform -> grad True	decoder_common.gru1.hrz.bias
+Uniform -> grad True	decoder_common.gru2.xh.weight
+Uniform -> grad True	decoder_common.gru2.xh.bias
+Uniform -> grad True	decoder_common.gru2.hh.weight
+Uniform -> grad True	decoder_common.gru2.hh.bias
+Uniform -> grad True	decoder_common.gru2.xrz.weight
+Uniform -> grad True	decoder_common.gru2.xrz.bias
+Uniform -> grad True	decoder_common.gru2.hrz.weight
+Uniform -> grad True	decoder_common.gru2.hrz.bias
+Uniform -> grad True	decoder_common.ls.weight
+Uniform -> grad True	decoder_common.ls.bias
+Uniform -> grad True	decoder_common.ly.weight
+Uniform -> grad True	decoder_common.ly.bias
+Uniform -> grad True	decoder_common.lc.weight
+Uniform -> grad True	decoder_common.lc.bias
+Uniform -> grad True	decoder_in.attention.sa.weight
+Uniform -> grad True	decoder_in.attention.sa.bias
+Uniform -> grad True	decoder_in.attention.a1.weight
+Uniform -> grad True	decoder_in.attention.a1.bias
+Uniform -> grad True	decoder_in.trg_lookup_table.weight
+Uniform -> grad True	decoder_in.gru1.xh.weight
+Uniform -> grad True	decoder_in.gru1.xh.bias
+Uniform -> grad True	decoder_in.gru1.hh.weight
+Uniform -> grad True	decoder_in.gru1.hh.bias
+Uniform -> grad True	decoder_in.gru1.xrz.weight
+Uniform -> grad True	decoder_in.gru1.xrz.bias
+Uniform -> grad True	decoder_in.gru1.hrz.weight
+Uniform -> grad True	decoder_in.gru1.hrz.bias
+Uniform -> grad True	decoder_in.gru2.xh.weight
+Uniform -> grad True	decoder_in.gru2.xh.bias
+Uniform -> grad True	decoder_in.gru2.hh.weight
+Uniform -> grad True	decoder_in.gru2.hh.bias
+Uniform -> grad True	decoder_in.gru2.xrz.weight
+Uniform -> grad True	decoder_in.gru2.xrz.bias
+Uniform -> grad True	decoder_in.gru2.hrz.weight
+Uniform -> grad True	decoder_in.gru2.hrz.bias
+Uniform -> grad True	decoder_in.ls.weight
+Uniform -> grad True	decoder_in.ls.bias
+Uniform -> grad True	decoder_in.ly.weight
+Uniform -> grad True	decoder_in.ly.bias
+Uniform -> grad True	decoder_in.lc.weight
+Uniform -> grad True	decoder_in.lc.bias
+Uniform -> grad True	decoder_out.attention.sa.weight
+Uniform -> grad True	decoder_out.attention.sa.bias
+Uniform -> grad True	decoder_out.attention.a1.weight
+Uniform -> grad True	decoder_out.attention.a1.bias
+Uniform -> grad True	decoder_out.trg_lookup_table.weight
+Uniform -> grad True	decoder_out.gru1.xh.weight
+Uniform -> grad True	decoder_out.gru1.xh.bias
+Uniform -> grad True	decoder_out.gru1.hh.weight
+Uniform -> grad True	decoder_out.gru1.hh.bias
+Uniform -> grad True	decoder_out.gru1.xrz.weight
+Uniform -> grad True	decoder_out.gru1.xrz.bias
+Uniform -> grad True	decoder_out.gru1.hrz.weight
+Uniform -> grad True	decoder_out.gru1.hrz.bias
+Uniform -> grad True	decoder_out.gru2.xh.weight
+Uniform -> grad True	decoder_out.gru2.xh.bias
+Uniform -> grad True	decoder_out.gru2.hh.weight
+Uniform -> grad True	decoder_out.gru2.hh.bias
+Uniform -> grad True	decoder_out.gru2.xrz.weight
+Uniform -> grad True	decoder_out.gru2.xrz.bias
+Uniform -> grad True	decoder_out.gru2.hrz.weight
+Uniform -> grad True	decoder_out.gru2.hrz.bias
+Uniform -> grad True	decoder_out.ls.weight
+Uniform -> grad True	decoder_out.ls.bias
+Uniform -> grad True	decoder_out.ly.weight
+Uniform -> grad True	decoder_out.ly.bias
+Uniform -> grad True	decoder_out.lc.weight
+Uniform -> grad True	decoder_out.lc.bias
+Uniform -> grad True	domain_discriminator.domain_discriminator.d_fc1.weight
+Uniform -> grad True	domain_discriminator.domain_discriminator.d_fc1.bias
+Uniform -> grad True	domain_discriminator.domain_discriminator.d_bn1.weight
+Uniform -> grad True	domain_discriminator.domain_discriminator.d_bn1.bias
+Uniform -> grad True	domain_discriminator.domain_discriminator.d_fc2.weight
+Uniform -> grad True	domain_discriminator.domain_discriminator.d_fc2.bias
+Uniform -> grad True	classifier.map_vocab.weight
+Uniform -> grad True	classifier.map_vocab.bias
+Push model onto GPU[3] ... 
+NMT(
+  (encoder_common): Encoder(
+    (src_lookup_table): Embedding(14336, 512, padding_idx=0)
+    (forw_gru): GRU(
+      (xh): Linear(in_features=512, out_features=512)
+      (hh): Linear(in_features=512, out_features=512)
+      (xrz): Linear(in_features=512, out_features=1024)
+      (hrz): Linear(in_features=512, out_features=1024)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (back_gru): GRU(
+      (xh): Linear(in_features=512, out_features=512)
+      (hh): Linear(in_features=512, out_features=512)
+      (xrz): Linear(in_features=512, out_features=1024)
+      (hrz): Linear(in_features=512, out_features=1024)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+  )
+  (encoder_in): Encoder(
+    (src_lookup_table): Embedding(14336, 128, padding_idx=0)
+    (forw_gru): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (back_gru): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+  )
+  (encoder_out): Encoder(
+    (src_lookup_table): Embedding(14336, 128, padding_idx=0)
+    (forw_gru): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (back_gru): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+  )
+  (s_init): Linear(in_features=512, out_features=512)
+  (s_init_out): Linear(in_features=128, out_features=128)
+  (s_init_in): Linear(in_features=128, out_features=128)
+  (tanh): Tanh()
+  (ha): Linear(in_features=512, out_features=512)
+  (ha_in): Linear(in_features=128, out_features=128)
+  (ha_out): Linear(in_features=128, out_features=128)
+  (decoder_common): Decoder(
+    (attention): Attention(
+      (sa): Linear(in_features=512, out_features=512)
+      (tanh): Tanh()
+      (maskSoftmax): MaskSoftmax(
+      )
+      (a1): Linear(in_features=512, out_features=1)
+    )
+    (trg_lookup_table): Embedding(15908, 512, padding_idx=0)
+    (tanh): Tanh()
+    (sigmoid): Sigmoid()
+    (gru1): GRU(
+      (xh): Linear(in_features=512, out_features=512)
+      (hh): Linear(in_features=512, out_features=512)
+      (xrz): Linear(in_features=512, out_features=1024)
+      (hrz): Linear(in_features=512, out_features=1024)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (gru2): GRU(
+      (xh): Linear(in_features=512, out_features=512)
+      (hh): Linear(in_features=512, out_features=512)
+      (xrz): Linear(in_features=512, out_features=1024)
+      (hrz): Linear(in_features=512, out_features=1024)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (ls): Linear(in_features=512, out_features=1024)
+    (ly): Linear(in_features=512, out_features=1024)
+    (lc): Linear(in_features=512, out_features=1024)
+  )
+  (decoder_in): Decoder(
+    (attention): Attention(
+      (sa): Linear(in_features=128, out_features=128)
+      (tanh): Tanh()
+      (maskSoftmax): MaskSoftmax(
+      )
+      (a1): Linear(in_features=128, out_features=1)
+    )
+    (trg_lookup_table): Embedding(15908, 128, padding_idx=0)
+    (tanh): Tanh()
+    (sigmoid): Sigmoid()
+    (gru1): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (gru2): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (ls): Linear(in_features=128, out_features=1024)
+    (ly): Linear(in_features=128, out_features=1024)
+    (lc): Linear(in_features=128, out_features=1024)
+  )
+  (decoder_out): Decoder(
+    (attention): Attention(
+      (sa): Linear(in_features=128, out_features=128)
+      (tanh): Tanh()
+      (maskSoftmax): MaskSoftmax(
+      )
+      (a1): Linear(in_features=128, out_features=1)
+    )
+    (trg_lookup_table): Embedding(15908, 128, padding_idx=0)
+    (tanh): Tanh()
+    (sigmoid): Sigmoid()
+    (gru1): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (gru2): GRU(
+      (xh): Linear(in_features=128, out_features=128)
+      (hh): Linear(in_features=128, out_features=128)
+      (xrz): Linear(in_features=128, out_features=256)
+      (hrz): Linear(in_features=128, out_features=256)
+      (sigmoid): Sigmoid()
+      (tanh): Tanh()
+    )
+    (ls): Linear(in_features=128, out_features=1024)
+    (ly): Linear(in_features=128, out_features=1024)
+    (lc): Linear(in_features=128, out_features=1024)
+  )
+  (domain_discriminator): Domain_Discriminator(
+    (domain_discriminator): Sequential(
+      (d_fc1): Linear(in_features=512, out_features=100)
+      (d_bn1): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True)
+      (d_relu1): ReLU(inplace)
+      (d_fc2): Linear(in_features=100, out_features=2)
+      (d_softmax): Softmax()
+    )
+  )
+  (classifier): Classifier(
+    (dropout): Dropout(p=0.5)
+    (map_vocab): Linear(in_features=512, out_features=15908)
+    (log_prob): MyLogSoftmax(
+    )
+    (criterion): NLLLoss(
+    )
+    (softmax): Softmax()
+  )
+)
+
+Mode: adadelta
+Learning rate: 1.0
+Grad norm: 1.0
+learning rate decay: 0.5
+start decay from: None
+last valid bleu: 0.0
+Parameters number: 152/41792541
+Start training ... 
+Randomly select 3 samples in the 36717th/43733 batch
+Self-normalization alpha -> None
+
+########################################################################################################################
+############################## Start Training ##############################
+########################################################################################################################
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Epoch [1/20] $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+/home/gushuhao/anaconda2/lib/python2.7/site-packages/torch/nn/modules/container.py:67: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  input = module(input)
+Epo: 1/20 |[ 100  40228  0.1 k] |acc: 7.90% |ppl:1551.15 | |logZ|:57.44 |stok/s:1583/30=52 |ttok/s:47 |stok/sec:1113.94 |ttok/sec:1027.66 |elapsed:91.78/1.53m
+
+[Src] ich m@@ chte meine zufriedenheit über die konstruktive rolle u@@ ern , die dieses parlament gespielt hat , und noch einmal die bedeutung hervorheben , die diesem organ und seinem handeln bei der mobilisierung staatlicher unterstützung und der unterstützung der in@@ vol@@ vierten sektoren und personen zukommt .
+[Ref] i would like to express my satisfaction at the constructive role played by this parliament and i would stress once again the importance of this institution ’@@ s role and actions in achieving social support and the support of the sectors and people involved .
+[Bpe] it is , and the commission of the commission of the commission .
+[Out] it is , and the commission of the commission of the commission .
+
+[Src] ich kann ihnen jedoch versichern , da uns das nicht davon abhalten wird , das notwendige zu tun und den zeit@@ rahmen und die kumu@@ la@@ tiven faktoren zu berücksichtigen , und wir werden jede anstrengung unternehmen , damit alle teile der kommission in diesem bereich zusammenarbeiten .
+[Ref] but i can assure you that will not prevent us doing what is necessary , being aware of the timescale and the cumul@@ ative factors that will bring to bear , and we shall make every effort to bring about a situation in which all parts of the commission work together to handle this issue .
+[Bpe] it is , and the commission of the commission of the commission .
+[Out] it is , and the commission of the commission of the commission .
+
+[Src] herrn cor@@ rie m@@ chte ich sagen , dass der genannte prozentsatz von 90 % , den wir im 9 . europ@@ ischen entwicklungsfonds zur verfügung stellen , die am wenigsten entwickelten l@@ nder als auch die gruppe der l@@ nder mit niedri@@ gem einkommens@@ niveau betrifft .
+[Ref] to mr corri@@ e , the figure of how much we are allocating in the nin@@ th european development fund of 90 % covers both the least developed countries and the low-@@ income group of countries .
+[Bpe] it is , the commission , and the commission of the commission of the commission .
+[Out] it is , the commission , and the commission of the commission of the commission .
+
+Epo: 1/20 |[ 200  30576  0.2 k] |acc:12.69% |ppl:589.08 | |logZ|:33.77 |stok/s:1069/30=35 |ttok/s:33 |stok/sec:1174.71 |ttok/sec:1106.46 |elapsed:71.94/2.77m
+
+[Src] ich k@@ n@@ nte mir vorstellen , da die p@@ da@@ go@@ gische zusammenarbeit eines tages zu gemeinsamen lehr@@ mitteln führt , vielleicht sogar zu einem gemeinsamen europ@@ ischen geschi@@ chts@@ buch .
+[Ref] i could imagine that educational cooperation will one day lead to common teaching materials - perhaps even to a common european history book .
+[Bpe] mr president , it is the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of
+[Out] mr president , it is the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of
+
+[Src] herr pr@@ si@@ den@@ t , es ist nicht nur sehr h@@ f@@ lich , sondern auch sehr mutig , dass der schwedische minister@@ pr@@ si@@ den@@ t heute hierher gekommen ist .
+[Ref] mr president , it was not only cour@@ te@@ ous of the swedish prime minister to come here , but also rather courageous .
+[Bpe] mr president , it is that the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european
+[Out] mr president , it is that the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european
+
+[Src] in manch@@ em geht die begeisterung aber zu weit , und ich habe daher auch mit einigen ab@@ nder@@ ungs@@ ant@@ r@@ gen versucht , das eine oder andere vorsichtig zurück@@ zunehmen .
+[Ref] however , in some respects the enthusiasm goes a little too far , and i have thus attempted , with my amendments , to modify one or two points .
+[Bpe] mr president , it is that the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european
+[Out] mr president , it is that the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european of the european
+
+Epo: 1/20 |[ 300  14960  0.3 k] |acc:15.00% |ppl:461.28 | |logZ|:11.10 |stok/s: 223/30= 7 |ttok/s: 9 |stok/sec:1210.60 |ttok/sec:1122.53 |elapsed:82.31/4.17m
+
+[Src] abgeordnetenstatut
+[Ref] members ' statute
+[Bpe] .
+[Out] .
+
+[Src] ( beifall )
+[Ref] ( applause )
+[Bpe] it is the commission .
+[Out] it is the commission .
+
+[Src] dafür danke ich ihnen .
+[Ref] i thank you for that .
+[Bpe] mr president .
+[Out] mr president .
+
+Epo: 1/20 |[ 400  16955  0.4 k] |acc:16.28% |ppl:374.30 | |logZ|:32.52 |stok/s: 946/30=31 |ttok/s:29 |stok/sec:1182.55 |ttok/sec:1098.94 |elapsed:86.22/5.61m
+
+[Src] die behauptung einiger banken , da die komponente des wechselkurs@@ risiko@@ s innerhalb der alten gebühr lediglich 10 % derselben aus@@ machte , ist nur schwer zu glauben .
+[Ref] it is difficult to believe the claim made by some banks that the exchange rate risk component in former charges only accounted for 10 % of the charge .
+[Bpe] mr president , i would like to the european union .
+[Out] mr president , i would like to the european union .
+
+[Src] herr pr@@ si@@ den@@ t , ein wei@@ buch ist per defini@@ tion@@ em keine sache der reinen un@@ verbin@@ dlichkeit , sondern soll reaktionen aus@@ l@@ sen .
+[Ref] mr president , a white paper , by definition , is not something you can take or leave .
+[Bpe] mr president , i would like to the european union .
+[Out] mr president , i would like to the european union .
+
+[Src] in meinen augen ist es sehr positiv , wenn wir geld nicht ausgeben müssen . aber das l@@ sst sich eben erst am ende des jahres endgültig feststellen .
+[Ref] i see it as a very positive thing if we do not have to spend money , but whether that is actually the case will not be definitely known until the end of the year .
+[Bpe] mr president , i would like to the european union .
+[Out] mr president , i would like to the european union .
+
+Epo: 1/20 |[ 500  31993  0.5 k] |acc:17.08% |ppl:338.37 | |logZ|:33.42 |stok/s: 635/30=21 |ttok/s:21 |stok/sec:1231.65 |ttok/sec:1133.18 |elapsed:82.32/7.00m
+
+[Src] doch vor allem haben alle ihre spor@@ tliche lauf@@ bahn in einem ver@@ ein oder einer schule begonnen .
+[Ref] secondly , and most importantly , they all began their sporting careers in an a@@ mat@@ eur club or at a school .
+[Bpe] mr president , mr president , i would like to say that the european union .
+[Out] mr president , mr president , i would like to say that the european union .
+
+[Src] wie wir mit diesen dringlichkeits@@ debatten umgehen , ist nicht mehr ernst und nicht mehr ernst zu nehmen .
+[Ref] we are no longer in earne@@ st about these debates on topical and urgent subjects of major importance , nor is our attitude to be taken seriously .
+[Bpe] mr president , mr president , i would like to say that we must be able .
+[Out] mr president , mr president , i would like to say that we must be able .
+
+[Src] der rat scheint vergessen zu haben , da eine nachhaltige arbeitsplatz@@ schaffung von einem nachhaltigen umweltschutz ab@@ hn@@ gt .
+[Ref] the council seems to have forgotten that sustainable jobs depend on a sustainable environment .
+[Bpe] mr president , mr president , i would like to the commission .
+[Out] mr president , mr president , i would like to the commission .
+
+Epo: 1/20 |[ 600  22658  0.6 k] |acc:18.21% |ppl:297.44 | |logZ|:45.60 |stok/s:1555/30=51 |ttok/s:49 |stok/sec:1250.63 |ttok/sec:1160.09 |elapsed:80.12/8.35m
+
+[Src] was tun wir denn tat@@ sch@@ lich , um gewalt gegen frauen und familien@@ an@@ geh@@ rige auszu@@ mer@@ zen , wenn die schlussfolgerungen der im rahmen des da@@ ph@@ ne@@ -@@ i@@ -programms durchgeführten studien noch immer nicht in entsprechende mana@@ hmen umgesetzt worden sind ?
+[Ref] what are we actually doing to wipe out violence against women and the family , when the results of research under the daphne i programme have yet to be applied ?
+[Bpe] we have to be able to be able to the european union , but we have to be able to be able to the european union .
+[Out] we have to be able to be able to the european union , but we have to be able to be able to the european union .
+
+[Src] es scheint mir daher l@@ cher@@ lich , die fo@@ ot@@ ball lea@@ gue von der teilnahme am u@@ e@@ fa@@ -@@ cu@@ p auszu@@ sch@@ lie@@ en , wenn der eigentliche konflikt zwischen der pre@@ mi@@ er lea@@ gue und der u@@ ef@@ a besteht .
+[Ref] therefore it seems ridiculous to me to prevent this competition having a team in the u@@ ef@@ a cup when in fact it is the premier league with whom u@@ ef@@ a has a dispute .
+[Bpe] mr president , i would like to say that the european union and the european union and the european union .
+[Out] mr president , i would like to say that the european union and the european union and the european union .
+
+[Src] ich hege nicht den lei@@ se@@ sten zweifel , dass die woh@@ nung , welche die amtierende pr@@ si@@ dentschaft in diesem geb@@ u@@ de des gemeinschaftlichen aufbaus zu errichten hat , den ehrgeizigen priori@@ tten , die uns heute vormittag vorgestellt wurden , gerecht wird .
+[Ref] i am absolutely convinced that the sto@@ re@@ y which this presidency has to add to this community building will be a match for the ambitious priorities they have presented to us this morning .
+[Bpe] mr president , mr president , i would like to say that the european union , i would like to say that the european union , i would like to say that the european union will be able to the european union .
+[Out] mr president , mr president , i would like to say that the european union , i would like to say that the european union , i would like to say that the european union will be able to the european union .
+
+Epo: 1/20 |[ 700  1606   0.7 k] |acc:19.16% |ppl:263.07 | |logZ|:36.48 |stok/s:1084/30=36 |ttok/s:32 |stok/sec:1165.37 |ttok/sec:1098.09 |elapsed:78.95/9.69m
+
+[Src] meiner ansicht nach muss man die gap überdenken , um für das , was heute als ' europ@@ i@@ sches agrar@@ modell ' bezeichnet wird , angemessene antworten finden zu k@@ n@@ nen .
+[Ref] i feel that the cap must be re@@ considered in order to provide the appropriate responses to what is today known as the ' european agricultural model ' .
+[Bpe] this is why we can be able to be able to be able to the european union .
+[Out] this is why we can be able to be able to be able to the european union .
+
+[Src] anfang 2003 wird die kommission eine mitteilung vorlegen , in der wir unsere position zu den zentralen elementen dieser von herrn lu@@ b@@ ber@@ s vorgeschlagenen neuen agenda für den schutz darlegen werden .
+[Ref] in early 2003 the commission intends to put forward a communication where we will express our own views on the main elements of this new agenda for protection presented by mr lu@@ bb@@ ers .
+[Bpe] this report , the commission will be able to be able to the european union .
+[Out] this report , the commission will be able to be able to the european union .
+
+[Src] erstens halte ich die einbeziehung der l@@ nder des süd@@ kaukasus in die nachbarschaftspolitik – eine forderung , die ursprünglich vom europ@@ ischen parlament aus@@ ging – für u@@ erst begrü@@ ens@@ wert .
+[Ref] first , the inclusion of the southern caucasus countries in the neighbourhood policy – something originally demanded by the european parliament – is very welcome .
+[Bpe] mr president , i would like to say that the european parliament has been made in the european union .
+[Out] mr president , i would like to say that the european parliament has been made in the european union .
+
+Epo: 1/20 |[ 800  38003  0.8 k] |acc:19.68% |ppl:249.68 | |logZ|:33.14 |stok/s: 642/30=21 |ttok/s:23 |stok/sec:1204.01 |ttok/sec:1130.08 |elapsed:74.88/10.96m
+
+[Src] dieser mangel m@@ u dringend be@@ hoben werden , und genau das wollen wir mit dem vorliegenden bericht erreichen .
+[Ref] that is what needs to be put right with great urgency , which is what we are doing with this report .
+[Bpe] i would like to say that we need to ensure that we have to be able to the commission .
+[Out] i would like to say that we need to ensure that we have to be able to the commission .
+
+[Src] ich bin davon überzeugt , dass bei der l@@ sung jeder dieser schwerpunkt@@ aufgaben sehr gute fortschritte gemacht wurden .
+[Ref] i am satisfied that very good progress has been made in addressing each of these priorities .
+[Bpe] mr president , i would like to say that the commission will be able to be taken .
+[Out] mr president , i would like to say that the commission will be able to be taken .
+
+[Src] dasselbe kann ich nicht für rubrik 4 betreffend die au@@ en@@ beziehungen und die k@@ mu@@ -@@ unterstützung behaupten .
+[Ref] i can not say the same for heading 4 on external actions and assistance to smes .
+[Bpe] i would like to say that the european union is a very important of the european union .
+[Out] i would like to say that the european union is a very important of the european union .
+
+Epo: 1/20 |[ 900  18598  0.9 k] |acc:19.52% |ppl:261.31 | |logZ|:61.90 |stok/s:1585/30=52 |ttok/s:48 |stok/sec:1229.52 |ttok/sec:1130.82 |elapsed:81.67/12.33m
+
+[Src] mir leu@@ chtet in keiner weise ein , warum einzig und allein die kombination von bisher un@@ tau@@ glichen instrumentari@@ en p@@ l@@ tz@@ lich dazu dienen soll , gerade beim besch@@ f@@ tig@@ ungs - und wirtschaftswachstum innerhalb der europ@@ ischen union einen wirksamen durchbruch zu erreichen .
+[Ref] i do not see in the least why the combination of previously useless instruments should , suddenly and on its own , help to achieve a real breakthrough as regards job creation and economic growth within the european union .
+[Bpe] the european union , the european union must be able to be able to the european union .
+[Out] the european union , the european union must be able to be able to the european union .
+
+[Src] bei dieser richtlinie , bei den vorbereitungen auf die debatte , die wir fort@@ an in li@@ ver@@ po@@ ol führen werden , war ein diskussion@@ spa@@ pi@@ er voll@@ st@@ n@@ dig dem thema pluralismus gewidmet , einer frage , die gro@@ e besorgnis aus@@ l@@ st .
+[Ref] in relation to this directive , in the preparations for the discussion we are going to hold from now on in li@@ ver@@ pool , an issues paper was entirely dedicated to the issue of pluralism , an issue that causes great concern .
+[Bpe] we must be able to be able to be able to be able to the commission .
+[Out] we must be able to be able to be able to be able to the commission .
+
+[Src] indem allen die m@@ glichkeiten einer aktiven beteiligung gegeben werden und der zugang als recht des bürgers und auf das gemein@@ wohl orientierte verpflichtung der mitgliedstaaten betrachtet wird , wird gew@@ hr@@ leistet , dass diese informationsgesellschaft für das wohl der bürger und mit ihrer einbeziehung errichtet wird .
+[Ref] by making available to all the means for active participation and considering access to it as a citizens ' right and an obligation of general interest for the member states , we can ensure that this information society is actually created for the citizens and around the citizens .
+[Bpe] it is that the commission will be able to be able to be able to the european union .
+[Out] it is that the commission will be able to be able to be able to the european union .
+
+Epo: 1/20 |[1000  23876  1.0 k] |acc:19.86% |ppl:244.04 | |logZ|:34.98 |stok/s:1052/30=35 |ttok/s:32 |stok/sec:1178.91 |ttok/sec:1089.30 |elapsed:86.44/13.81m
+
+[Src] dabei sollte auch das ziel verfolgt werden , dass man beiden gemeinschaften hilft , nun endlich zu einer l@@ sung für die teilung zyperns zu kommen und die teilung zyperns zu überwinden .
+[Ref] in so doing , we should also be aiming to help both communities to arrive at a final solution to the division of cyprus and to overcome it .
+[Bpe] this is why we have to say that it is not to say that it is not to say that it is not to say that it is to be able to say that it is not to say that it is to be able to say that it is not to say that it is to be able to say that it is not
+[Out] this is why we have to say that it is not to say that it is not to say that it is not to say that it is to be able to say that it is not to say that it is to be able to say that it is not to say that it is to be able to say that it is not
+
+[Src] unser ziel ist zu gew@@ hr@@ leisten , dass das petitions@@ recht im bewusstsein der europ@@ er f@@ u fa@@ sst , sowohl in den alten wie auch in den neuen mitgliedstaaten .
+[Ref] our aim is to ensure that the right of petition is embe@@ d@@ ded in european consciousness , both in old and new member states .
+[Bpe] this is why we have to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not
+[Out] this is why we have to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not
+
+[Src] wenn es keinen kulturellen und ideologischen rahmen gibt , gibt es auch keine politische gemeinschaft , und wenn es keine politische gemeinschaft gibt , dann gibt es auch keine europ@@ ische staatsbürgerschaft .
+[Ref] if no cultural and ideological framework exists , there is no community policy , and if there is no community policy , there is no european citizenship .
+[Bpe] that is why we must not be able to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to be able
+[Out] that is why we must not be able to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to say that it is not to be able
+
+Epo: 1/20 |[1100  23323  1.1 k] |acc:21.03% |ppl:226.24 | |logZ|:34.38 |stok/s: 706/30=23 |ttok/s:23 |stok/sec:1158.74 |ttok/sec:1092.64 |elapsed:72.77/15.05m
+
+[Src] es entsteht jetzt um die ostsee eine region , die fast aussch@@ lie@@ lich aus mitgliedern der europ@@ ischen union besteht .
+[Ref] we now have a region surrounding the baltic sea which almost exclusively consists of member states of the european union .
+[Bpe] the european union , the european union and the european union .
+[Out] the european union , the european union and the european union .
+
+[Src] ich würde vorschlagen , mit der fischerei@@ industrie zusammenzuarbeiten und sicherzustellen , da ihr die probleme ver@@ st@@ n@@ dlich werden .
+[Ref] but i would suggest that we must work with the fishing industry and make sure that it fully understands the problems .
+[Bpe] i believe that we can not be able to make the european union .
+[Out] i believe that we can not be able to make the european union .
+
+[Src] die versuche des parlaments , dies durch verweise auf die lissabonner strategie zu rechtfertigen , sind deshalb der gipfel der heuchelei .
+[Ref] in this instance , parliament ’@@ s attempts at justification through references to the lisbon strategy are the height of hypocrisy .
+[Bpe] the council of the european union .
+[Out] the council of the european union .
+

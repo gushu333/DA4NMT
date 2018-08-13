@@ -70,8 +70,10 @@ class Nbs(object):
     def batch_search(self):
 
         # s0: (1, trg_nhids), enc_src0: (srcL, 1, src_nhids*2), uh0: (srcL, 1, align_size)
+        enc_size_pri = self.enc_src0_private.size(-1)
         enc_size = self.enc_src0_common.size(-1)
         L, align_size = self.srcL, wargs.align_size
+        align_size_pri = wargs.align_size_pri
         hyp_scores = np.zeros(1).astype('float32')
         delete_idx, prevb_id = None, None
         #batch_adj_list = [range(self.srcL) for _ in range(self.k)]
@@ -93,10 +95,10 @@ class Nbs(object):
             y_im1 = [b[-2] for b in prevb]
 
             # (src_sent_len, 1, src_nhids) -> (src_sent_len, preb_sz, src_nhids)
-            self.enc_src_private = self.enc_src0_private.view(L, -1, enc_size).expand(L, preb_sz, enc_size)
+            self.enc_src_private = self.enc_src0_private.view(L, -1, enc_size_pri).expand(L, preb_sz, enc_size_pri)
             self.enc_src_common = self.enc_src0_common.view(L, -1, enc_size).expand(L, preb_sz, enc_size)
 
-            uh_private = self.uh0_private.view(L, -1, align_size).expand(L, preb_sz, align_size)
+            uh_private = self.uh0_private.view(L, -1, align_size_pri).expand(L, preb_sz, align_size_pri)
             uh_common = self.uh0_common.view(L, -1, align_size).expand(L, preb_sz, align_size)
 
             a_i_common, s_i_common, y_im1_common, alpha_ij_common = self.decoder_common.step(s_im1_common, self.enc_src_common, uh_common, y_im1)

@@ -19,23 +19,28 @@ class NMT(nn.Module):
 
         self.encoder_common = Encoder(src_vocab_size, wargs.src_wemb_size, wargs.enc_hid_size)
         #'in' is the in domain private encoder
-        self.encoder_in = Encoder(src_vocab_size, wargs.src_wemb_size, wargs.enc_hid_size)
+        self.encoder_in = Encoder(src_vocab_size, wargs.src_wemb_size_pri, wargs.enc_hid_size_pri)
         #'out' is the out of domain private encoder
-        self.encoder_out = Encoder(src_vocab_size, wargs.src_wemb_size, wargs.enc_hid_size)
+        self.encoder_out = Encoder(src_vocab_size, wargs.src_wemb_size_pri, wargs.enc_hid_size_pri)
 
         self.s_init = nn.Linear(wargs.enc_hid_size, wargs.dec_hid_size)
+        self.s_init_out = nn.Linear(wargs.enc_hid_size_pri, wargs.dec_hid_size_pri)
+        self.s_init_in = nn.Linear(wargs.enc_hid_size_pri, wargs.dec_hid_size_pri)
+
         self.tanh = nn.Tanh()
         self.ha = nn.Linear(wargs.enc_hid_size, wargs.align_size)
+        self.ha_in = nn.Linear(wargs.enc_hid_size_pri, wargs.align_size_pri)
+        self.ha_out = nn.Linear(wargs.enc_hid_size_pri, wargs.align_size_pri)
         # as above
         self.decoder_common = Decoder(trg_vocab_size)
-        self.decoder_in = Decoder(trg_vocab_size)
-        self.decoder_out = Decoder(trg_vocab_size)
+        self.decoder_in = Decoder(trg_vocab_size, com=False)
+        self.decoder_out = Decoder(trg_vocab_size, com=False)
         #DANN
         self.domain_discriminator = Domain_Discriminator()
 
         self.classifier = Classifier(wargs.out_size, trg_vocab_size, self.trg_lookup_table if wargs.copy_trg_emb is True else None)
 
-    def init_state(self, xs_h, xs_mask=None):
+    def init_state(self, xs_h, xs_mask=None, domain='IN'):
 
         assert xs_h.dim() == 3  # slen, batch_size, enc_size
         if xs_mask is not None:
@@ -43,7 +48,15 @@ class NMT(nn.Module):
         else:
             xs_h = xs_h.mean(0)
 
-        return self.tanh(self.s_init(xs_h))
+
+        if domain is 'IN':
+            res = self.tanh(self.s_init_in(xs_h))
+        elif domain is 'OUT':
+            res = self.tanh(self.s_init_out(xs_h))
+        else:
+            res = self.tanh(self.s_init(xs_h))
+
+        return res
 
     def init(self, xs, domain, xs_mask=None, test=True):
 
@@ -53,29 +66,33 @@ class NMT(nn.Module):
 
         if domain is "IN":
             xs = self.encoder_in(xs, xs_mask)
+            uh = self.ha_in(xs)
         elif domain is "OUT":
             xs = self.encoder_out(xs, xs_mask)
+            uh = self.ha_out(xs)
         else:
             xs = self.encoder_common(xs, xs_mask)
+            uh = self.ha(xs)
 
-        s0 = self.init_state(xs, xs_mask)
-        uh = self.ha(xs)
+        s0 = self.init_state(xs, xs_mask, domain)
         return s0, xs, uh
 
-    def forward(self, srcs, trgs, srcs_m, trgs_m, domain, isAtt=False, test=False, alpha=0):
+    def forward(self, srcs, trgs, srcs_m, trgs_m, domain, isAtt=False, test=False, alpha=0, adv=False):
         #DANN
         
         # (max_slen_batch, batch_size, enc_hid_size)
         s0_private, srcs_private, uh_private = self.init(srcs, domain, srcs_m, test)
         s0_common, srcs_common, uh_common = self.init(srcs, "common", srcs_m, test)
+        if adv is True:
+            return self.domain_discriminator(s0_common, alpha)
 
         #!!!!!!!
 
         logit_com = self.decoder_common(s0_common, srcs_common, trgs, uh_common, srcs_m, trgs_m, isAtt=isAtt)
         if domain is "IN":
-            logit_pri  = self.decoder_in(s0_private, srcs_private, trgs, uh_common, srcs_m, trgs_m, isAtt=isAtt)
+            logit_pri  = self.decoder_in(s0_private, srcs_private, trgs, uh_private, srcs_m, trgs_m, isAtt=isAtt)
         else:
-            logit_pri = self.decoder_out(s0_private, srcs_private, trgs, uh_common, srcs_m, trgs_m, isAtt=isAtt)
+            logit_pri = self.decoder_out(s0_private, srcs_private, trgs, uh_private, srcs_m, trgs_m, isAtt=isAtt)
         logit = logit_pri + logit_com
 
         def decoder_step_out(logit, max_out=True):
@@ -112,7 +129,7 @@ class Encoder(nn.Module):
         self.output_size = output_size
         f = lambda name: str_cat(prefix, name)  # return 'Encoder_' + parameters name
 
-        self.src_lookup_table = nn.Embedding(src_vocab_size, wargs.src_wemb_size, padding_idx=PAD)
+        self.src_lookup_table = nn.Embedding(src_vocab_size, input_size, padding_idx=PAD)
 
         self.forw_gru = GRU(input_size, output_size, with_ln=with_ln, prefix=f('Forw'))
         self.back_gru = GRU(output_size, output_size, with_ln=with_ln, prefix=f('Back'))
@@ -151,8 +168,8 @@ class Attention(nn.Module):
         self.a1 = nn.Linear(self.align_size, 1)
 
     def forward(self, s_tm1, xs_h, uh, xs_mask=None):
-
         d1, d2, d3 = uh.size()#?????
+       # print self.sa(s_tm1)[None, :, :].size(), uh.size()
         _check_a1 = self.a1(self.tanh(self.sa(s_tm1)[None, :, :] + uh)).squeeze(2)
         e_ij = self.maskSoftmax(_check_a1, mask=xs_mask, dim=0)
         # weighted sum of the h_j: (b, enc_hid_size)
@@ -162,22 +179,22 @@ class Attention(nn.Module):
 
 class Decoder(nn.Module):
 
-    def __init__(self, trg_vocab_size, max_out=True):
+    def __init__(self, trg_vocab_size, max_out=True, com=True):
 
         super(Decoder, self).__init__()
 
         self.max_out = max_out
-        self.attention = Attention(wargs.dec_hid_size, wargs.align_size)
-        self.trg_lookup_table = nn.Embedding(trg_vocab_size, wargs.trg_wemb_size, padding_idx=PAD)
+        self.attention = Attention(wargs.dec_hid_size if com else wargs.dec_hid_size_pri, wargs.align_size if com else wargs.align_size_pri)
+        self.trg_lookup_table = nn.Embedding(trg_vocab_size, wargs.trg_wemb_size if com else wargs.trg_wemb_size_pri, padding_idx=PAD)
         self.tanh = nn.Tanh()
         self.sigmoid = nn.Sigmoid()
-        self.gru1 = GRU(wargs.trg_wemb_size, wargs.dec_hid_size)
-        self.gru2 = GRU(wargs.enc_hid_size, wargs.dec_hid_size)
+        self.gru1 = GRU(wargs.trg_wemb_size if com else wargs.trg_wemb_size_pri, wargs.dec_hid_size if com else wargs.dec_hid_size_pri)
+        self.gru2 = GRU(wargs.enc_hid_size if com else wargs.enc_hid_size_pri, wargs.dec_hid_size if com else wargs.dec_hid_size_pri)
 
         out_size = 2 * wargs.out_size if max_out else wargs.out_size
-        self.ls = nn.Linear(wargs.dec_hid_size, out_size)
-        self.ly = nn.Linear(wargs.trg_wemb_size, out_size)
-        self.lc = nn.Linear(wargs.enc_hid_size, out_size)
+        self.ls = nn.Linear(wargs.dec_hid_size if com else wargs.dec_hid_size_pri, out_size)
+        self.ly = nn.Linear(wargs.trg_wemb_size if com else wargs.trg_wemb_size_pri, out_size)
+        self.lc = nn.Linear(wargs.enc_hid_size if com else wargs.enc_hid_size_pri, out_size)
 
         #self.classifier = Classifier(wargs.out_size, trg_vocab_size,
         #                            self.trg_lookup_table if wargs.copy_trg_emb is True else None)
@@ -215,6 +232,7 @@ class Decoder(nn.Module):
         for k in range(y_Lm1):
 
             y_tm1 = ys_e[k]
+        #    print k
             #attend is ci; s_tm1 is hiddenstate
             attend, s_tm1, _, alpha_ij = \
                     self.step(s_tm1, xs_h, uh, y_tm1, xs_mask, ys_mask[k])
@@ -264,10 +282,10 @@ class Domain_Discriminator(nn.Module):
         self.domain_discriminator.add_module('d_bn1', nn.BatchNorm2d(wargs.dis_hid_size))
         self.domain_discriminator.add_module('d_relu1', nn.ReLU(True))
         self.domain_discriminator.add_module('d_fc2', nn.Linear(wargs.dis_hid_size, wargs.dis_type))
-        self.domain_discriminator.add_module('d_softmax', nn.LogSoftmax())
+        self.domain_discriminator.add_module('d_softmax', nn.Softmax())
 
     def forward(self, input, alpha):
-        reverse_input = ReverseLayerF.apply(input, alpha)
-        domain_output = self.domain_discriminator(reverse_input)
+        #reverse_input = ReverseLayerF.apply(input, alpha)
+        domain_output = self.domain_discriminator(input)
 
         return domain_output
