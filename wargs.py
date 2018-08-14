@@ -184,6 +184,8 @@ dis_hid_size = 100
 dis_type = 2
 alpha = 0.05
 
+adv_weight = 0.22
+
 fine_tune = False
 
 none_sense = True

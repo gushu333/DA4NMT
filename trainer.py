@@ -92,13 +92,7 @@ class Trainer(object):
             sample_spend, eval_spend, epoch_bidx = 0, 0, 0
             show_start = time.time()
 
-            for name, par in self.model.named_parameters():
-                if name.split('.')[0] != "domain_discriminator":
-                    par.requires_grad = True
-                else:
-                    par.requires_grad = False
-
-            for k in range(batch_count + batch_count_domain):
+    
 
                 bidx += 1
                 epoch_bidx = k + 1
@@ -113,7 +107,7 @@ class Trainer(object):
                     self.model.zero_grad()
                     # (max_tlen_batch - 1, batch_size, out_size)
                     #forward compute DANN out of domain
-                    decoder_outputs, domain_outputs = self.model(srcs, trgs[:-1], srcs_m, trgs_m[:-1], 'OUT', alpha=wargs.alpha)
+                    decoder_outputs, domain_outputs = self.model(srcs, trgs[:-1], srcs_m, trgs_m[:-1], 'OUT', alpha=wargs.adv_weight)
                     if len(decoder_outputs) == 2: (decoder_outputs, _checks) = decoder_outputs
                     this_bnum = decoder_outputs.size(1)
                 
@@ -125,14 +119,14 @@ class Trainer(object):
 
                     #self.model.zero_grad()
                     #domain_outputs = self.model(srcs, None, srcs_m, None, 'OUT', alpha=alpha)
-                    #if wargs.cross_entropy is True:
-                     #   domain_label = tc.zeros(len(domain_outputs))
-                      #  domain_label = domain_label.long()
-                       # domain_label = domain_label.cuda()
-                        #domainv_label = Variable(domain_label, volatile=False)
+                    if wargs.cross_entropy is True:
+                        domain_label = tc.zeros(len(domain_outputs))
+                        domain_label = domain_label.long()
+                        domain_label = domain_label.cuda()
+                        domainv_label = Variable(domain_label, volatile=False)
                 
-                    #    domain_loss_a = loss_domain(tc.log(domain_outputs), domainv_label)
-                     #   domain_loss_a.backward(retain_graph = True if wargs.max_entropy is True else False)
+                        domain_loss_a = loss_domain(tc.log(domain_outputs), domainv_label)
+                        domain_loss_a.backward(retain_graph = True if wargs.max_entropy else False)
                     if wargs.max_entropy is True:
                         #try to max this entropy
                         lam = wargs.alpha if epoch > 1 else 0
@@ -155,14 +149,14 @@ class Trainer(object):
                     batch_loss, batch_correct_num, batch_log_norm = self.model.classifier.snip_back_prop(
                        decoder_outputs, trgs_domain[1:], trgs_m_domain[1:], wargs.snip_size)
                     #domain_outputs = self.model(srcs_domain, None, srcs_m_domain, None, 'IN', alpha=alpha)
-                    #if wargs.cross_entropy is True:
-                     #   domain_label = tc.ones(len(domain_outputs))
-                      #  domain_label = domain_label.long()
-                       # domain_label = domain_label.cuda()
-                        #domainv_label = Variable(domain_label, volatile=False)
+                    if wargs.cross_entropy is True:
+                        domain_label = tc.ones(len(domain_outputs))
+                        domain_label = domain_label.long()
+                        domain_label = domain_label.cuda()
+                        domainv_label = Variable(domain_label, volatile=False)
                 
-                    #    domain_loss_a = loss_domain(tc.log(domain_outputs), domainv_label)
-                     #   domain_loss_a.backward(retain_graph = True if wargs.max_entropy is True else False)
+                        domain_loss_a = loss_domain(tc.log(domain_outputs), domainv_label)
+                        domain_loss_a.backward(retain_graph = True if wargs.max_entropy else False)
                     if wargs.max_entropy is True:
                         lam = wargs.alpha if epoch > 1 else 0
                         domain_loss_b = lam * tc.dot(tc.log(domain_outputs), domain_outputs)
@@ -285,149 +279,6 @@ class Trainer(object):
 
                     eval_spend = time.time() - eval_start
 
-
-
-            for name, par in self.model.named_parameters():
-                if name.split('.')[0] != "domain_discriminator":
-                    par.requires_grad = False
-                else:
-                    par.requires_grad = True
-
-            for k in range(batch_count + batch_count_domain):
-                epoch_bidx = k + 1
-                batch_idx = shuffled_batch_idx[k] if epoch >= wargs.epoch_shuffle_minibatch else k
-
-                if batch_idx < batch_count:
-
-                    _, srcs, trgs, slens, srcs_m, trgs_m = self.train_data[batch_idx]
-
-                    self.model.zero_grad()
-                    # (max_tlen_batch - 1, batch_size, out_size)
-                    #forward compute DANN out of domain
-                    domain_outputs = self.model(srcs, trgs[:-1], srcs_m, trgs_m[:-1], 'OUT', alpha=wargs.alpha, adv=True)
-                    #if len(decoder_outputs) == 2: (decoder_outputs, _checks) = decoder_outputs
-                    #this_bnum = decoder_outputs.size(1)
-                
-                    #batch_loss, grad_output, batch_correct_num = memory_efficient(
-                    #    outputs, trgs[1:], trgs_m[1:], self.model.classifier)
-                    #backward compute, now we have the grad
-                    #batch_loss, batch_correct_num, batch_log_norm = self.model.classifier.snip_back_prop(
-                     #   decoder_outputs, trgs[1:], trgs_m[1:], wargs.snip_size)
-
-                    #self.model.zero_grad()
-                    #domain_outputs = self.model(srcs, None, srcs_m, None, 'OUT', alpha=alpha)
-                    if wargs.cross_entropy is True:
-                        domain_label = tc.zeros(len(domain_outputs))
-                        domain_label = domain_label.long()
-                        domain_label = domain_label.cuda()
-                        domainv_label = Variable(domain_label, volatile=False)
-                
-                        domain_loss_a = loss_domain(tc.log(domain_outputs), domainv_label)
-                        domain_loss_a.backward()
-                    #if wargs.max_entropy is True:
-                        #try to max this entropy
-                     #   domain_loss_b = -wargs.alpha*tc.dot(tc.log(domain_outputs), domain_outputs)
-                      #  domain_loss_b.backward()
-
-                    batch_src_words = srcs.data.ne(PAD).sum()
-                    assert batch_src_words == slens.data.sum()
-                    batch_trg_words = trgs[1:].data.ne(PAD).sum()
-
-                elif batch_idx >= batch_count:
-
-                    #domain_loss_out.backward(retain_graph=True)
-                    #DANN in domain compute
-                    _, srcs_domain, trgs_domain, slens_domain, srcs_m_domain, trgs_m_domain = self.train_data_domain[batch_idx - batch_count]
-                    self.model.zero_grad()
-                    domain_outputs = self.model(srcs_domain, trgs_domain[:-1], srcs_m_domain, trgs_m_domain[:-1], 'IN', alpha=wargs.alpha, adv=True)
-                    #if len(decoder_outputs) == 2: (decoder_outputs, _checks) = decoder_outputs
-                    #this_bnum = decoder_outputs.size(1)
-                    #batch_loss, batch_correct_num, batch_log_norm = self.model.classifier.snip_back_prop(
-                     #  decoder_outputs, trgs_domain[1:], trgs_m_domain[1:], wargs.snip_size)
-                    #domain_outputs = self.model(srcs_domain, None, srcs_m_domain, None, 'IN', alpha=alpha)
-                    if wargs.cross_entropy is True:
-                        domain_label = tc.ones(len(domain_outputs))
-                        domain_label = domain_label.long()
-                        domain_label = domain_label.cuda()
-                        domainv_label = Variable(domain_label, volatile=False)
-                
-                        domain_loss_a = loss_domain(tc.log(domain_outputs), domainv_label)
-                        domain_loss_a.backward(retain_graph = True if wargs.max_entropy is True else False)
-                    #if wargs.max_entropy is True:
-                     #   domain_loss_b = -wargs.alpha*tc.dot(tc.log(domain_outputs), domain_outputs)
-                      #  domain_loss_b.backward()
-
-                    batch_src_words = srcs_domain.data.ne(PAD).sum()
-                    assert batch_src_words == slens_domain.data.sum()
-                    batch_trg_words = trgs_domain[1:].data.ne(PAD).sum()
-
-                self.optim.step()
-
-                show_loss += batch_loss
-                #domain_loss += domain_loss_a.data.clone()[0]
-                #domain_loss += domain_loss_out
-                show_correct_num += batch_correct_num
-                epoch_loss += batch_loss
-                epoch_num_correct += batch_correct_num
-                show_src_words += batch_src_words
-                show_trg_words += batch_trg_words
-                epoch_trg_words += batch_trg_words
-
-                #batch_log_norm = tc.mean(tc.abs(batch_log_norm))
-
-                if epoch_bidx % wargs.display_freq == 0:
-                    #print show_correct_num, show_loss, show_trg_words, show_loss/show_trg_words
-                    ud = time.time() - show_start - sample_spend - eval_spend
-                    wlog(
-                        'Epo:{:>2}/{:>2} |[{:^5} {:^5} {:^5}k] |acc:{:5.2f}% |ppl:{:4.2f} '
-                        '| |logZ|:{:.2f} '
-                        '|stok/s:{:>4}/{:>2}={:>2} |ttok/s:{:>2} '
-                        '|stok/sec:{:6.2f} |ttok/sec:{:6.2f} |elapsed:{:4.2f}/{:4.2f}m'.format(
-                            epoch, wargs.max_epochs, epoch_bidx, batch_idx, bidx/1000,
-                            (show_correct_num / show_trg_words) * 100,
-                            math.exp(show_loss / show_trg_words), 0,
-                            batch_src_words, this_bnum, int(batch_src_words / this_bnum),
-                            int(batch_trg_words / this_bnum),
-                            show_src_words / ud, show_trg_words / ud, ud,
-                            (time.time() - train_start) / 60.)
-                    )
-                    show_loss, show_src_words, show_trg_words, show_correct_num = 0, 0, 0, 0
-                    sample_spend, eval_spend = 0, 0
-                    show_start = time.time()
-
-                if epoch_bidx % wargs.sampling_freq == 0:
-
-                    sample_start = time.time()
-                    self.model.eval()
-                    #self.model.classifier.eval()
-                    tor = Translator(self.model, self.sv, self.tv)
-
-                    if batch_idx < batch_count:
-                        # (max_len_batch, batch_size)
-                        sample_src_tensor = srcs.t()[:sample_size]
-                        sample_trg_tensor = trgs.t()[:sample_size]
-                        tor.trans_samples(sample_src_tensor, sample_trg_tensor, "OUT")
-
-                    elif batch_idx >= batch_count:
-                        sample_src_tensor = srcs_domain.t()[:sample_size]
-                        sample_trg_tensor = trgs_domain.t()[:sample_size]
-                        tor.trans_samples(sample_src_tensor, sample_trg_tensor, "IN")
-                    wlog('')
-                    sample_spend = time.time() - sample_start
-                    self.model.train()
-
-                # Just watch the translation of some source sentences in training data
-                if wargs.if_fixed_sampling and bidx == batch_start_sample:
-                    # randomly select sample_size sample from current batch
-                    rand_rows = np.random.choice(this_bnum, sample_size, replace=False)
-                    sample_src_tensor = tc.Tensor(sample_size, srcs.size(0)).long()
-                    sample_src_tensor.fill_(PAD)
-                    sample_trg_tensor = tc.Tensor(sample_size, trgs.size(0)).long()
-                    sample_trg_tensor.fill_(PAD)
-
-                    for id in xrange(sample_size):
-                        sample_src_tensor[id, :] = srcs.t()[rand_rows[id], :]
-                        sample_trg_tensor[id, :] = trgs.t()[rand_rows[id], :]
 
 
 

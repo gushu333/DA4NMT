@@ -290,7 +290,7 @@ class Domain_Discriminator(nn.Module):
         self.domain_discriminator.add_module('d_softmax', nn.Softmax())
 
     def forward(self, input, alpha):
-        #reverse_input = ReverseLayerF.apply(input, alpha)
+        reverse_input = ReverseLayerF.apply(input, alpha)
         domain_output = self.domain_discriminator(input)
 
         return domain_output
