@@ -12,8 +12,8 @@ Embedding layer
 # Size of word embedding of source word and target word
 src_wemb_size = 512
 trg_wemb_size = 512
-src_wemb_size_pri = 128
-trg_wemb_size_pri = 128
+src_wemb_size_pri = 512
+trg_wemb_size_pri = 512
 '''
 Encoder layer
 '''

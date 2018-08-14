@@ -17,11 +17,14 @@ class NMT(nn.Module):
 
         super(NMT, self).__init__()
 
-        self.encoder_common = Encoder(src_vocab_size, wargs.src_wemb_size, wargs.enc_hid_size)
+        self.src_lookup_table = nn.Embedding(src_vocab_size, wargs.src_wemb_size, padding_idx=PAD)
+        self.trg_lookup_table = nn.Embedding(trg_vocab_size, wargs.trg_wemb_size, padding_idx=PAD)
+
+        self.encoder_common = Encoder(src_vocab_size, wargs.src_wemb_size, wargs.enc_hid_size, self.src_lookup_table)
         #'in' is the in domain private encoder
-        self.encoder_in = Encoder(src_vocab_size, wargs.src_wemb_size_pri, wargs.enc_hid_size_pri)
+        self.encoder_in = Encoder(src_vocab_size, wargs.src_wemb_size_pri, wargs.enc_hid_size_pri, self.src_lookup_table)
         #'out' is the out of domain private encoder
-        self.encoder_out = Encoder(src_vocab_size, wargs.src_wemb_size_pri, wargs.enc_hid_size_pri)
+        self.encoder_out = Encoder(src_vocab_size, wargs.src_wemb_size_pri, wargs.enc_hid_size_pri, self.src_lookup_table)
 
         self.s_init = nn.Linear(wargs.enc_hid_size, wargs.dec_hid_size)
         self.s_init_out = nn.Linear(wargs.enc_hid_size_pri, wargs.dec_hid_size_pri)
@@ -32,9 +35,10 @@ class NMT(nn.Module):
         self.ha_in = nn.Linear(wargs.enc_hid_size_pri, wargs.align_size_pri)
         self.ha_out = nn.Linear(wargs.enc_hid_size_pri, wargs.align_size_pri)
         # as above
-        self.decoder_common = Decoder(trg_vocab_size)
-        self.decoder_in = Decoder(trg_vocab_size, com=False)
-        self.decoder_out = Decoder(trg_vocab_size, com=False)
+        self.decoder_common = Decoder(trg_vocab_size, self.trg_lookup_table)
+        self.decoder_in = Decoder(trg_vocab_size, self.trg_lookup_table, com=False)
+        self.decoder_out = Decoder(trg_vocab_size, self.trg_lookup_table, com=False)
+
         #DANN
         self.domain_discriminator = Domain_Discriminator()
 
@@ -121,6 +125,7 @@ class Encoder(nn.Module):
                  src_vocab_size,
                  input_size,
                  output_size,
+                 src_lookup_table,
                  with_ln=False,
                  prefix='Encoder', **kwargs):
 
@@ -129,7 +134,7 @@ class Encoder(nn.Module):
         self.output_size = output_size
         f = lambda name: str_cat(prefix, name)  # return 'Encoder_' + parameters name
 
-        self.src_lookup_table = nn.Embedding(src_vocab_size, input_size, padding_idx=PAD)
+        self.src_lookup_table = src_lookup_table
 
         self.forw_gru = GRU(input_size, output_size, with_ln=with_ln, prefix=f('Forw'))
         self.back_gru = GRU(output_size, output_size, with_ln=with_ln, prefix=f('Back'))
@@ -179,13 +184,13 @@ class Attention(nn.Module):
 
 class Decoder(nn.Module):
 
-    def __init__(self, trg_vocab_size, max_out=True, com=True):
+    def __init__(self, trg_vocab_size, trg_lookup_table, max_out=True, com=True):
 
         super(Decoder, self).__init__()
 
         self.max_out = max_out
         self.attention = Attention(wargs.dec_hid_size if com else wargs.dec_hid_size_pri, wargs.align_size if com else wargs.align_size_pri)
-        self.trg_lookup_table = nn.Embedding(trg_vocab_size, wargs.trg_wemb_size if com else wargs.trg_wemb_size_pri, padding_idx=PAD)
+        self.trg_lookup_table = trg_lookup_table
         self.tanh = nn.Tanh()
         self.sigmoid = nn.Sigmoid()
         self.gru1 = GRU(wargs.trg_wemb_size if com else wargs.trg_wemb_size_pri, wargs.dec_hid_size if com else wargs.dec_hid_size_pri)
